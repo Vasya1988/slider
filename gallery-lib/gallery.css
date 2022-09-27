@@ -1,0 +1,10 @@
+.gallery {
+  width: 100%;
+  overflow: hidden; }
+  .gallery .gallery-line {
+    overflow: hidden; }
+  .gallery .gallery-slide {
+    min-height: 1px;
+    float: left; }
+
+/*# sourceMappingURL=gallery.css.map */
