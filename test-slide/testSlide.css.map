@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,UAAU;EACN,KAAK,EAAE,IAAI",
+"sources": ["testSlide.sass"],
+"names": [],
+"file": "testSlide.css"
+}

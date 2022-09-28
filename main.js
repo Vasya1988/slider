@@ -1,1 +1,2 @@
-new Gallery(document.getElementById('gallery'))
+// new Gallery(document.getElementById('gallery'))
+new TestSlide (document.querySelector('body'))
