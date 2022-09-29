@@ -2,7 +2,8 @@ const classStyle = {
     containerId: 'containerSlide',
     containerClass: 'container',
     lineSlide: 'lineSlide',
-    slide: 'slide'
+    slide: 'slide',
+    slideImage: 'image'
 }
 class TestSlide {
     constructor(element, option = {}, amountBanners) {
@@ -34,8 +35,13 @@ class TestSlide {
 
         // Добавляем количество слайдов
         for (let i = 0; i < this.amountBanners; i++) {
-            slideLine.insertAdjacentElement('afterbegin', slide())
+            slideLine.insertAdjacentElement('afterbegin', slide());
+            slideLine.querySelector(`.${classStyle.slide}`).innerHTML = `
+                <img src='' class=${classStyle.slideImage} />
+            `
         }
+
+
 
     }
 
