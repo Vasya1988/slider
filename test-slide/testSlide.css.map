@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": "AAAA,UAAU;EACN,KAAK,EAAE,IAAI",
+"mappings": "AAAA,UAAU;EACN,KAAK,EAAE,IAAI;EACX,qBAAU;IACN,KAAK,EAAE,IAAI;IACX,OAAO,EAAE,IAAI;IACb,WAAW,EAAE,MAAM;IACnB,eAAe,EAAE,MAAM;IACvB,4BAAM;MACF,KAAK,EAAE,IAAI;MACX,MAAM,EAAE,KAAK;MACb,UAAU,EAAE,GAAG",
 "sources": ["testSlide.sass"],
 "names": [],
 "file": "testSlide.css"
