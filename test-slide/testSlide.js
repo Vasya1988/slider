@@ -11,15 +11,24 @@ class TestSlide {
         // Элемент, куда будет рендериться слайдер
         this.container = element
 
-        // Ширина слайда
-        this.sizeSlider = this.container.getBoundingClientRect().width;
+        // Первый слайд при запуске слайдера
+        this.currentSlide = 0
+
+        
         // Количество баннеров
         this.amountBanners = amountBanners
 
         this.manageHTML = this.manageHTML.bind(this)
         this.setParameters = this.setParameters.bind(this)
+        this.setEvents = this.setEvents.bind(this)
+        this.resizeSlides = this.resizeSlides.bind(this)
+        this.startDrag = this.startDrag.bind(this)
+        this.setEvents = this.setEvents.bind(this)
+        this.dragging = this.dragging.bind(this)
+        this.stopDrag = this.stopDrag.bind(this)
         this.manageHTML();
         this.setParameters();
+        this.setEvents();
     }
 
     // Управление HTML, render
@@ -46,10 +55,13 @@ class TestSlide {
     }
 
     setParameters() {
+        // Ширина слайда
+        this.sizeSlider = this.container.getBoundingClientRect().width;
         // Находим ширину линии слайдера
         this.lineSize = this.sizeSlider * this.amountBanners;
         // Добавляем ширину линии слайдера, найденную выше
-        this.container.querySelector(`.${classStyle.lineSlide}`).style.width = `${this.lineSize}px`;
+        this.lineNode = this.container.querySelector(`.${classStyle.lineSlide}`);
+        this.lineNode.style.width = `${this.lineSize}px`;
 
         // Добавляем ширин каждому слайду
         Array
@@ -58,9 +70,37 @@ class TestSlide {
             .map((slide) => {
                 slide.style.width = `${this.sizeSlider}px`
             })
+    }
 
+    setEvents() {
+        window.addEventListener('resize', boundingEvent(this.resizeSlides))
+        this.lineNode.addEventListener('pointerdown', this.startDrag)
+        this.lineNode.addEventListener('pointerup', this.stopDrag)
+    }
 
-        console.log(this.lineSize)
+    // resize слайд линии и слайдов
+    resizeSlides() {
+        console.log('dd')
+        this.setParameters()
+    }
+
+    // Начало движения линии слайдера
+    startDrag(event) {
+        this.clickX = event.pageX
+        console.log(this.clickX);
+        window.addEventListener('pointermove', this.dragging)
+    }
+
+    stopDrag() {
+        window.removeEventListener('pointermove', this.dragging)
+    }
+
+    dragging(evt) {
+        console.log(evt)
+    }
+
+    setStylePosition() {
+
     }
 }
 
@@ -97,4 +137,13 @@ const randomColor = () => {
     for (i = 0; i < 3; i++) color.push(Math.floor(Math.random() * 255));
 
     return color.join(', ')
+}
+
+// Сокращение обновлений ресайза у окна браузера
+const boundingEvent = (func, time = 100) => {
+    let timer;
+    return function() {
+        clearTimeout(timer)
+        timer = setTimeout(func, time)
+    }
 }
