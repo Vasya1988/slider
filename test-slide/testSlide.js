@@ -26,6 +26,7 @@ class TestSlide {
         this.setEvents = this.setEvents.bind(this)
         this.dragging = this.dragging.bind(this)
         this.stopDrag = this.stopDrag.bind(this)
+        this.setStylePosition = this.setStylePosition.bind(this)
         this.manageHTML();
         this.setParameters();
         this.setEvents();
@@ -80,14 +81,12 @@ class TestSlide {
 
     // resize слайд линии и слайдов
     resizeSlides() {
-        console.log('dd')
         this.setParameters()
     }
 
     // Начало движения линии слайдера
     startDrag(event) {
         this.clickX = event.pageX
-        console.log(this.clickX);
         window.addEventListener('pointermove', this.dragging)
     }
 
@@ -96,11 +95,15 @@ class TestSlide {
     }
 
     dragging(evt) {
-        console.log(evt)
+        // console.log(evt)
+        this.dragX =  evt.pageX;
+        this.shift = this.dragX - this.clickX;
+        console.log(this.dragX, this.clickX)
+        this.setStylePosition(this.shift)
     }
 
-    setStylePosition() {
-
+    setStylePosition(shift) {
+        this.lineNode.style.transform = `translate3d(${shift}px, 0, 0)`
     }
 }
 
