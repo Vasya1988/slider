@@ -64,13 +64,16 @@ class TestSlide {
         this.lineNode = this.container.querySelector(`.${classStyle.lineSlide}`);
         this.lineNode.style.width = `${this.lineSize}px`;
 
-        // Добавляем ширин каждому слайду
+        // Добавляем ширину каждому слайду
         Array
             .from(this.container
             .querySelector(`.${classStyle.lineSlide}`).children)
             .map((slide) => {
                 slide.style.width = `${this.sizeSlider}px`
             })
+
+        // Разобрать, понять -------------------------------
+        this.x = -this.currentSlide * this.sizeSlider
     }
 
     setEvents() {
@@ -86,24 +89,27 @@ class TestSlide {
 
     // Начало движения линии слайдера
     startDrag(event) {
-        this.clickX = event.pageX
+        this.clickX = event.pageX;
+        this.startX = this.x;
         window.addEventListener('pointermove', this.dragging)
     }
 
     stopDrag() {
-        window.removeEventListener('pointermove', this.dragging)
+        window.removeEventListener('pointermove', this.dragging);
     }
 
     dragging(evt) {
         // console.log(evt)
         this.dragX =  evt.pageX;
         this.shift = this.dragX - this.clickX;
-        console.log(this.dragX, this.clickX)
-        this.setStylePosition(this.shift)
+        console.log(this.dragX, this.clickX);
+        // Разобрать, понять ---------------------------------
+        this.x = this.startX + this.shift
+        this.setStylePosition()
     }
 
     setStylePosition(shift) {
-        this.lineNode.style.transform = `translate3d(${shift}px, 0, 0)`
+        this.lineNode.style.transform = `translate3d(${this.x}px, 0, 0)`
     }
 }
 
