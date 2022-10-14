@@ -13,6 +13,7 @@ class TestSlide {
 
         // Первый слайд при запуске слайдера
         this.currentSlide = 0
+        this.changeActiveSlide = false
 
         
         // Количество баннеров
@@ -73,7 +74,10 @@ class TestSlide {
             })
 
         // Разобрать, понять -------------------------------
-        this.x = -this.currentSlide * this.sizeSlider
+        // Добавляем свойство, котороые потом перезапишем
+        // и добавим в свойство startX
+        this.x = 0 //-this.currentSlide * this.sizeSlider
+        
     }
 
     setEvents() {
@@ -89,27 +93,63 @@ class TestSlide {
 
     // Начало движения линии слайдера
     startDrag(event) {
+        this.changeActiveSlide = false
         this.clickX = event.pageX;
+        // StartX по умолчанию = 0, при загрузке страницы
+        // При последукющих событиях Pointermove, startX значение 
+        // будет меняться и начало движения слайдера будет с пердыдущей точки остановки
         this.startX = this.x;
         window.addEventListener('pointermove', this.dragging)
+        // console.log('this.x --> ', this.x)
+        // console.log(-this.currentSlide, this.sizeSlider)
+        // console.log('startX --> ', this.startX)
     }
 
     stopDrag() {
         window.removeEventListener('pointermove', this.dragging);
+        
+        this.x = -this.currentSlide * this.sizeSlider
+        this.setStylePosition(this.x)
     }
 
     dragging(evt) {
         // console.log(evt)
         this.dragX =  evt.pageX;
         this.shift = this.dragX - this.clickX;
-        console.log(this.dragX, this.clickX);
+        // console.log(this.dragX, this.clickX);
         // Разобрать, понять ---------------------------------
-        this.x = this.startX + this.shift
-        this.setStylePosition()
+        // В startX после первого события, будет лежать thisX к которому
+        // мы добавим новое кол-во px которые мы перетянули событием pointermove
+        // Записываем сколько px мы протащили pointermove (зажатую мышь)
+        // и при следующем событии этот this.x уйдет в this.startX, 
+        // Что бы продолжить перетаскивание слайдера с той точки, 
+        // где остановились
+        this.x = this.startX + this.shift;
+        this.setStylePosition(this.x)
+
+        if (
+            this.shift > 20 && 
+            this.shift > 0 &&
+            !this.changeActiveSlide &&
+            this.currentSlide > 0
+        ) {
+            this.changeActiveSlide = true
+            this.currentSlide = this.currentSlide - 1
+        }
+
+        if (
+            this.shift < -20 && 
+            this.shift < 0 &&
+            !this.changeActiveSlide &&
+            this.currentSlide < this.lineNode.childElementCount 
+        ) {
+            this.changeActiveSlide = true
+            this.currentSlide = this.currentSlide + 1
+        }
     }
 
     setStylePosition(shift) {
-        this.lineNode.style.transform = `translate3d(${this.x}px, 0, 0)`
+        this.lineNode.style.transform = `translate3d(${shift}px, 0, 0)`
     }
 }
 
