@@ -19,6 +19,10 @@ class TestSlide {
         // Количество баннеров
         this.amountBanners = amountBanners
 
+        this.settings = {
+            margin: option.margin || 0
+        }
+
         this.manageHTML = this.manageHTML.bind(this)
         this.setParameters = this.setParameters.bind(this)
         this.setEvents = this.setEvents.bind(this)
@@ -59,24 +63,30 @@ class TestSlide {
     setParameters() {
         // Ширина слайда
         this.sizeSlider = this.container.getBoundingClientRect().width;
+
         // Находим ширину линии слайдера
         this.lineSize = this.sizeSlider * this.amountBanners;
+
         // Добавляем ширину линии слайдера, найденную выше
         this.lineNode = this.container.querySelector(`.${classStyle.lineSlide}`);
         this.lineNode.style.width = `${this.lineSize}px`;
-
+        
         // Добавляем ширину каждому слайду
         Array
             .from(this.container
             .querySelector(`.${classStyle.lineSlide}`).children)
             .map((slide) => {
-                slide.style.width = `${this.sizeSlider}px`
+                slide.style.width = `${this.sizeSlider + this.settings.margin}px`
+                slide.style.marginRight = `${this.settings.margin}px`
             })
+
+        // Переменная для замедления оттягивания последнего слайда
+        this.maximumX = -(this.lineNode.childElementCount - 1) * (this.sizeSlider + this.settings.margin);
 
         // Разобрать, понять -------------------------------
         // Добавляем свойство, котороые потом перезапишем
         // и добавим в свойство startX
-        this.x = 0 //-this.currentSlide * this.sizeSlider
+        this.x = -this.currentSlide * (this.sizeSlider + this.settings.margin)
         
     }
 
@@ -99,6 +109,7 @@ class TestSlide {
         // При последукющих событиях Pointermove, startX значение 
         // будет меняться и начало движения слайдера будет с пердыдущей точки остановки
         this.startX = this.x;
+        this.resetStyleTransition()
         window.addEventListener('pointermove', this.dragging)
         // console.log('this.x --> ', this.x)
         // console.log(-this.currentSlide, this.sizeSlider)
@@ -110,13 +121,18 @@ class TestSlide {
         
         this.x = -this.currentSlide * this.sizeSlider
         this.setStylePosition(this.x)
+        this.setStyleTransition()
     }
 
     dragging(evt) {
         // console.log(evt)
         this.dragX =  evt.pageX;
-        this.shift = this.dragX - this.clickX;
+        const shift = this.dragX - this.clickX;
         // console.log(this.dragX, this.clickX);
+
+        // Переменная для анимации замедления оттягивания крайних слайдов
+        const easing = shift / 5;
+
         // Разобрать, понять ---------------------------------
         // В startX после первого события, будет лежать thisX к которому
         // мы добавим новое кол-во px которые мы перетянули событием pointermove
@@ -124,12 +140,16 @@ class TestSlide {
         // и при следующем событии этот this.x уйдет в this.startX, 
         // Что бы продолжить перетаскивание слайдера с той точки, 
         // где остановились
-        this.x = this.startX + this.shift;
+        // this.x = this.startX + this.shift;
+
+        // Math.max И Math.min здесть нужны только для замедления анимации на крайних слайдах
+        this.x = Math.max(Math.min(this.startX + shift, easing), this.maximumX + easing);
+
         this.setStylePosition(this.x)
 
         if (
-            this.shift > 20 && 
-            this.shift > 0 &&
+            shift > 20 && 
+            shift > 0 &&
             !this.changeActiveSlide &&
             this.currentSlide > 0
         ) {
@@ -138,10 +158,10 @@ class TestSlide {
         }
 
         if (
-            this.shift < -20 && 
-            this.shift < 0 &&
+            shift < -20 && 
+            shift < 0 &&
             !this.changeActiveSlide &&
-            this.currentSlide < this.lineNode.childElementCount 
+            this.currentSlide < this.lineNode.childElementCount - 1
         ) {
             this.changeActiveSlide = true
             this.currentSlide = this.currentSlide + 1
@@ -150,6 +170,13 @@ class TestSlide {
 
     setStylePosition(shift) {
         this.lineNode.style.transform = `translate3d(${shift}px, 0, 0)`
+    }
+
+    setStyleTransition() {
+        this.lineNode.style.transition = `all .35s ease 0s`
+    }
+    resetStyleTransition() {
+        this.lineNode.style.transition = `all 0s ease 0s`
     }
 }
 
