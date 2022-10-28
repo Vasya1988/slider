@@ -3,7 +3,14 @@ const classStyle = {
     containerClass: 'container',
     lineSlide: 'lineSlide',
     slide: 'slide',
-    slideImage: 'image'
+    slideImage: 'image',
+    buttons: 'navButtons',
+    button: 'button',
+    buttonRight: 'data-button="right"',
+    buttonLeft: 'data-button="left"',
+    navDots: 'navDots',
+    dot: 'dot',
+    dotActive: 'dotActive'
 }
 class TestSlide {
     constructor(element, option = {}, amountBanners) {
@@ -43,6 +50,25 @@ class TestSlide {
         // Добавляем разметку сладера на страницу
         this.container.insertAdjacentElement('afterbegin', container());
 
+        this.container.innerHTML = `
+            <div class=${classStyle.containerClass}>
+                <div class=${classStyle.buttons} >
+                    <button
+                        class=${classStyle.button}
+                        ${classStyle.buttonLeft}
+                    >Left</button>
+                    <button
+                        class=${classStyle.button}
+                        ${classStyle.buttonRight}
+                    >Right</button>
+                </div>
+
+                <div class=${classStyle.navDots} >
+
+                </div>
+            </div>
+        `
+
         // Добавляем классы и линию слайдера
         const slideLine = this.container
             .querySelector(`.${classStyle.containerClass}`)
@@ -56,8 +82,11 @@ class TestSlide {
             `
         }
 
+        this.dotsNode = this.container.querySelector(`.${classStyle.navDots}`);
 
-
+        this.dotsNode.innerHTML = Array.from(slideLine.children).map((item, index) => 
+        `<button class="${classStyle.dot} ${checkActiveDot(item, index, this.currentSlide)}" ></button>`).join('')
+        
     }
 
     setParameters() {
@@ -75,9 +104,10 @@ class TestSlide {
         Array
             .from(this.container
             .querySelector(`.${classStyle.lineSlide}`).children)
-            .map((slide) => {
+            .map((slide, index) => {
                 slide.style.width = `${this.sizeSlider + this.settings.margin}px`
                 slide.style.marginRight = `${this.settings.margin}px`
+                slide.innerHTML = index + 1
             })
 
         // Переменная для замедления оттягивания последнего слайда
@@ -122,6 +152,10 @@ class TestSlide {
         this.x = -this.currentSlide * this.sizeSlider
         this.setStylePosition(this.x)
         this.setStyleTransition()
+
+        Array.from(this.dotsNode.children).map((i, index)=> {
+            checkActiveDot(i, index, this.currentSlide)
+        })
     }
 
     dragging(evt) {
@@ -180,7 +214,7 @@ class TestSlide {
     }
 }
 
-// Helpers
+// ---------------------- Helpers
 const container = () => {
     const createContainer = document.createElement('div');
     createContainer.setAttribute('id', classStyle.containerId);
@@ -189,7 +223,7 @@ const container = () => {
     return createContainer
 }
 
-// Создаем линиюс слайдера
+// Создаем линию слайдера
 const lineSlide = () => {
     const line = document.createElement('div');
     line.classList.add(classStyle.lineSlide)
@@ -207,7 +241,7 @@ const slide = () => {
     return slide
 }
 
-// Случаынй цвет для теста Random color for a test
+// Случайный цвет для теста Random color for a test
 const randomColor = () => {
     let color = [];
     for (i = 0; i < 3; i++) color.push(Math.floor(Math.random() * 255));
@@ -222,4 +256,10 @@ const boundingEvent = (func, time = 100) => {
         clearTimeout(timer)
         timer = setTimeout(func, time)
     }
+}
+
+const checkActiveDot = (prop, index, slide) => {
+    return index === slide 
+        ? prop.classList.add(classStyle.dotActive) 
+        : prop.classList.remove(classStyle.dotActive)
 }
