@@ -10,7 +10,18 @@
       width: 100%;
       height: 20rem;
       min-height: 1px; }
-  .container .dotActive {
-    background-color: red; }
+  .container .navDots {
+    width: 100%;
+    max-width: 68px;
+    display: flex;
+    justify-content: space-around; }
+    .container .navDots .dot {
+      width: 1em;
+      height: 1em;
+      background-color: #bebebe;
+      border: none;
+      border-radius: 50%; }
+    .container .navDots .dotActive {
+      background-color: #838383; }
 
 /*# sourceMappingURL=testSlide.css.map */
