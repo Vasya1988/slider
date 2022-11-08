@@ -39,6 +39,8 @@ class TestSlide {
         this.dragging = this.dragging.bind(this)
         this.stopDrag = this.stopDrag.bind(this)
         this.setStylePosition = this.setStylePosition.bind(this)
+        this.changeSlide = this.changeSlide.bind(this)
+        this.changeCurrentSLide = this.changeCurrentSLide.bind(this)
         this.manageHTML();
         this.setParameters();
         this.setEvents();
@@ -86,6 +88,11 @@ class TestSlide {
 
         this.dotsNode.innerHTML = Array.from(slideLine.children).map((item, index) => 
         `<button class="${classStyle.dot} ${checkActiveDot(item, index, this.currentSlide)}" ></button>`).join('')
+
+        // Навигация. Кнопки впере-назад
+        this.btnLeft = this.container.querySelector(`[${classStyle.buttonLeft}]`)
+
+        this.btnRight = this.container.querySelector(`[${classStyle.buttonRight}]`)
         
     }
 
@@ -124,6 +131,8 @@ class TestSlide {
         window.addEventListener('resize', boundingEvent(this.resizeSlides))
         this.lineNode.addEventListener('pointerdown', this.startDrag)
         this.lineNode.addEventListener('pointerup', this.stopDrag)
+
+        this.btnLeft.addEventListener('click', this.changeSlide)
     }
 
     // resize слайд линии и слайдов
@@ -149,9 +158,7 @@ class TestSlide {
     stopDrag() {
         window.removeEventListener('pointermove', this.dragging);
         
-        this.x = -this.currentSlide * this.sizeSlider
-        this.setStylePosition(this.x)
-        this.setStyleTransition()
+        this.changeCurrentSLide()
 
         Array.from(this.dotsNode.children).map((i, index)=> {
             checkActiveDot(i, index, this.currentSlide)
@@ -211,6 +218,18 @@ class TestSlide {
     }
     resetStyleTransition() {
         this.lineNode.style.transition = `all 0s ease 0s`
+    }
+
+    changeSlide(e) {
+        this.currentSlide <= 0 
+            ? false 
+            : (this.currentSlide = this.currentSlide - 1,
+            this.changeCurrentSLide())
+    }
+    changeCurrentSLide() {
+        this.x = -this.currentSlide * this.sizeSlider
+        this.setStylePosition(this.x)
+        this.setStyleTransition()
     }
 }
 
