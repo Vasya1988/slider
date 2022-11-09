@@ -133,6 +133,7 @@ class TestSlide {
         this.lineNode.addEventListener('pointerup', this.stopDrag)
 
         this.btnLeft.addEventListener('click', this.changeSlide)
+        this.btnRight.addEventListener('click', this.changeSlide)
     }
 
     // resize слайд линии и слайдов
@@ -221,10 +222,18 @@ class TestSlide {
     }
 
     changeSlide(e) {
-        this.currentSlide <= 0 
-            ? false 
-            : (this.currentSlide = this.currentSlide - 1,
-            this.changeCurrentSLide())
+        const btn = e.target.dataset.button
+        if (btn === 'left') {
+            this.currentSlide <= 0 
+                ? false 
+                : this.currentSlide = this.currentSlide - 1
+        }
+        if (btn === 'right') {
+            this.currentSlide < this.amountBanners - 1
+                ? this.currentSlide = this.currentSlide + 1
+                : false
+        }
+        this.changeCurrentSLide()
     }
     changeCurrentSLide() {
         this.x = -this.currentSlide * this.sizeSlider
