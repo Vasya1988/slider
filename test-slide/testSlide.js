@@ -41,6 +41,8 @@ class TestSlide {
         this.setStylePosition = this.setStylePosition.bind(this)
         this.changeSlide = this.changeSlide.bind(this)
         this.changeCurrentSLide = this.changeCurrentSLide.bind(this)
+        this.changeDot = this.changeDot.bind(this)
+        this.checkActiveDot = this.checkActiveDot.bind(this)
         this.manageHTML();
         this.setParameters();
         this.setEvents();
@@ -87,7 +89,9 @@ class TestSlide {
         this.dotsNode = this.container.querySelector(`.${classStyle.navDots}`);
 
         this.dotsNode.innerHTML = Array.from(slideLine.children).map((item, index) => 
-        `<button class="${classStyle.dot} ${checkActiveDot(item, index, this.currentSlide)}" ></button>`).join('')
+        `<button class="${classStyle.dot} ${this.checkActiveDot(item, index, this.currentSlide)}" data-index=${index} ></button>`).join('')
+
+
 
         // Навигация. Кнопки впере-назад
         this.btnLeft = this.container.querySelector(`[${classStyle.buttonLeft}]`)
@@ -132,6 +136,8 @@ class TestSlide {
         this.lineNode.addEventListener('pointerdown', this.startDrag)
         this.lineNode.addEventListener('pointerup', this.stopDrag)
 
+        this.dotsNode.addEventListener('click', this.changeDot)
+
         this.btnLeft.addEventListener('click', this.changeSlide)
         this.btnRight.addEventListener('click', this.changeSlide)
     }
@@ -162,7 +168,7 @@ class TestSlide {
         this.changeCurrentSLide()
 
         Array.from(this.dotsNode.children).map((i, index)=> {
-            checkActiveDot(i, index, this.currentSlide)
+            this.checkActiveDot(i, index, this.currentSlide)
         })
     }
 
@@ -240,6 +246,22 @@ class TestSlide {
         this.setStylePosition(this.x)
         this.setStyleTransition()
     }
+    changeDot(e) {
+        console.log(e.target)
+        console.log(this.currentSlide)
+        const index = Number(e.target.dataset.index)
+        this.currentSlide = index
+        this.changeCurrentSLide()
+
+        this.checkActiveDot(e.target, index, this.cu)
+        
+    }
+    checkActiveDot(prop, index, slide) {
+    
+        return index === slide 
+            ? prop.classList.add(classStyle.dotActive) 
+            : prop.classList.remove(classStyle.dotActive)
+    }
 }
 
 // ---------------------- Helpers
@@ -286,8 +308,3 @@ const boundingEvent = (func, time = 100) => {
     }
 }
 
-const checkActiveDot = (prop, index, slide) => {
-    return index === slide 
-        ? prop.classList.add(classStyle.dotActive) 
-        : prop.classList.remove(classStyle.dotActive)
-}
