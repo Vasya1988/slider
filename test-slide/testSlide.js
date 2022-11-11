@@ -166,10 +166,10 @@ class TestSlide {
         window.removeEventListener('pointermove', this.dragging);
         
         this.changeCurrentSLide()
-
-        Array.from(this.dotsNode.children).map((i, index)=> {
-            this.checkActiveDot(i, index, this.currentSlide)
-        })
+        this.checkActiveDot()
+        // Array.from(this.dotsNode.children).map((i, index)=> {
+        //     this.checkActiveDot(i, index, this.currentSlide)
+        // })
     }
 
     dragging(evt) {
@@ -240,6 +240,7 @@ class TestSlide {
                 : false
         }
         this.changeCurrentSLide()
+        this.checkActiveDot()
     }
     changeCurrentSLide() {
         this.x = -this.currentSlide * this.sizeSlider
@@ -252,15 +253,15 @@ class TestSlide {
         const index = Number(e.target.dataset.index)
         this.currentSlide = index
         this.changeCurrentSLide()
-
-        this.checkActiveDot(e.target, index, this.cu)
+        this.checkActiveDot()
         
     }
-    checkActiveDot(prop, index, slide) {
-    
-        return index === slide 
+    checkActiveDot() {
+        Array.from(this.dotsNode.children).map((prop, index) => {
+            index === this.currentSlide 
             ? prop.classList.add(classStyle.dotActive) 
             : prop.classList.remove(classStyle.dotActive)
+        })
     }
 }
 
