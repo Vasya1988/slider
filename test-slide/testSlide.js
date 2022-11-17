@@ -133,8 +133,10 @@ class TestSlide {
 
     setEvents() {
         window.addEventListener('resize', boundingEvent(this.resizeSlides))
+        window.addEventListener('load', this.stopDrag)
+        window.addEventListener('pointercancel', this.stopDrag)
         this.lineNode.addEventListener('pointerdown', this.startDrag)
-        this.lineNode.addEventListener('pointerup', this.stopDrag)
+        window.addEventListener('pointerup', this.stopDrag)
 
         this.dotsNode.addEventListener('click', this.changeDot)
 

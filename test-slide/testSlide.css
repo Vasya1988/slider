@@ -9,7 +9,15 @@
     .container .lineSlide .slide {
       width: 100%;
       height: 20rem;
-      min-height: 1px; }
+      min-height: 1px;
+      display: flex;
+      justify-content: center;
+      font-size: 4em;
+      color: #fff;
+      align-items: center; }
+    .container .lineSlide .slide:active {
+      cursor: grabbing;
+      user-select: none; }
   .container .navButtons {
     margin-top: -10px;
     display: flex;
